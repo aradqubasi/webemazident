@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Texts{% endblock %}</h1>
+    <p>Here be the actions</p>
+{% endblock %}
+
+{% block content %}
+    {% for text in texts %}
+        <article class="post">
+            <header>
+                <div>
+                    <h1>{{ text['caption'] }}</h1>
+                    <div class="about">by {{ text['candidate'] }}</div>
+                    <a class="action" href="#">Edit</a>
+                </div>
+            </header>
+            {% if not loop.last %}
+                <hr/>
+            {% endif %}
+        </article>
+    {% endfor %}
+{% endblock %}
