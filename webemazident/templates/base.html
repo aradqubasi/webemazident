@@ -1,10 +1,11 @@
 <!doctype <!DOCTYPE html>
-<title>{% block title %}{% endblock %} - Flaskr</title>
+<title>{% block title %}{% endblock %} - Web Emazident</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
-    <h1>Flaskr</h1>
+    <h1>Web Emazident</h1>
     <ul>
         <li><a href="{{ url_for('texts.index') }}">Texts</a>
+        <li><a href="{{ url_for('text.new') }}">New text</a>
     </ul>
 </nav>
 <section class="content">

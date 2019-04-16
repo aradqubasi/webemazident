@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Text{% endblock %}</h1>
+    <p>Here be the actions</p>
+{% endblock %}
+
+{% block content %}
+    <form method='post'>
+        <label for='caption'>Caption</label>
+        <input name='caption' id='caption' required value='{{ request.form["caption"] }}'>
+        <br>
+
+        <label for='candidate'>Candidate</label>
+        <input name='candidate' id='candidate' required value='{{ request.form["candidate"] }}'>
+        <br>
+
+        <label for="body_text">Text</label>
+        <textarea name="body_text" id="body_text" required value="{{ request.form['body_text'] }}"></textarea>
+        <br>
+
+        <input type="submit" value="Create">
+    </form>
+{% endblock %}
