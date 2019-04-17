@@ -11,7 +11,7 @@
                 <div>
                     <h1>{{ text['caption'] }}</h1>
                     <div class="about">by {{ text['candidate'] }}</div>
-                    <a class="action" href="#">Edit</a>
+                    <a class="action" href="{{ url_for('text.edit', id = text._id) }}">Edit</a>
                 </div>
             </header>
             {% if not loop.last %}

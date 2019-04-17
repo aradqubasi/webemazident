@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Text{% endblock %}</h1>
+    <p>Here be the actions</p>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <label for="caption">Caption</label>
+        <input name="caption" id="caption" required value="{{ request.form['caption'] or text['caption'] }}">
+        <br>
+
+        <label for="candidate">Candidate</label>
+        <input name="candidate" id="candidate" required value="{{ request.form['candidate'] or text['candidate'] }}">
+        <br>
+
+        {% for sentence in text['sentences'] %}
+        <input name="number" value="{{ sentence['number'] }}">
+        <input name="original" value="{{ sentence['original'] }}">
+        <input name="translation" value="{{ sentence['translation'] }}">
+        <br>
+            {% for emotion, ratio in sentence['emotions'].items() %}
+            <label for="{{ emotion }}">{{emotion}}</label>
+            <input name="{{ emotion }}" type="number" step="any" value="{{ ratio }}">
+            {% endfor%}
+        <br>
+        {% endfor %}
+        <input type="submit" value="Update">
+    </form>
+{% endblock %}
