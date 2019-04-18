@@ -3,9 +3,12 @@ from flask import (
 )
 from webemazident.db import get_db
 
+from bson.objectid import ObjectId
+
 bp = Blueprint('texts', __name__, url_prefix='/texts')
 
 @bp.route('/index', methods=('GET',))
 def index():
-    texts = get_db().get_collection('texts').find({})
-    return render_template('texts/index.html', texts=texts)
+    if request.method == 'GET':
+        texts = get_db().get_collection('texts').find({})
+        return render_template('texts/index.html', texts=texts)

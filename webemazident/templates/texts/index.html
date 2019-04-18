@@ -12,6 +12,9 @@
                     <h1>{{ text['caption'] }}</h1>
                     <div class="about">by {{ text['candidate'] }}</div>
                     <a class="action" href="{{ url_for('text.edit', id = text._id) }}">Edit</a>
+                    <form action="{{ url_for('text.delete', id = text._id) }}" method="post">
+                        <input type="submit" value="Delete">
+                    </form>
                 </div>
             </header>
             {% if not loop.last %}

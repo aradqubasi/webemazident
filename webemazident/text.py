@@ -69,6 +69,10 @@ def edit(id):
             } for i in range(len(numbers))])
         }
         get_db().get_collection('texts').replace_one({'_id': text['_id']}, text)
-        # return render_template('text/edit.html', text=text)
         return redirect(url_for('text.edit', id=text['_id'])) 
         
+@bp.route('/text/delete/<id>', methods=('POST',))
+def delete(id):
+    if request.method == 'POST':
+        get_db().get_collection('texts').delete_one({'_id': ObjectId(id)})
+        return redirect(url_for('texts.index'))

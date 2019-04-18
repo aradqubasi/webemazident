@@ -27,4 +27,7 @@
         {% endfor %}
         <input type="submit" value="Update">
     </form>
+    <form action="{{ url_for('text.delete', id=text['_id']) }}" method="post">
+        <input type="submit" value="Delete">
+    </form>
 {% endblock %}
