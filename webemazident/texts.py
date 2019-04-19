@@ -9,6 +9,6 @@ bp = Blueprint('texts', __name__, url_prefix='/texts')
 
 @bp.route('/index', methods=('GET',))
 def index():
-    if request.method == 'GET':
-        texts = get_db().get_collection('texts').find({})
-        return render_template('texts/index.html', texts=texts)
+    texts = get_db().get_collection('texts').find({})
+    return render_template('texts/index.html', texts=texts)
+    

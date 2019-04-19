@@ -76,3 +76,7 @@ def delete(id):
     if request.method == 'POST':
         get_db().get_collection('texts').delete_one({'_id': ObjectId(id)})
         return redirect(url_for('texts.index'))
+
+@bp.route('/text/error', methods=('GET',))
+def error():
+    raise TypeError('aaaaaaa')
