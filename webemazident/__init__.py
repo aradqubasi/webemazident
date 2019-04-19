@@ -1,11 +1,15 @@
 from flask import Flask, render_template
+import os
 
 def create_app() -> Flask:
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
-        CONNECTION_STRING='mongodb://DbAdmin:1app1Mongo@165.227.154.157:27017',
-        DATABASE='dev-1'
+        CONNECTION_STRING=os.environ.get('CONNECTION_STRING'),
+        DATABASE=os.environ.get('DATABASE'),
+        GOOGLE_API_KEY=os.environ.get('GOOGLE_API_KEY'),
+        RAPID_API_KEY=os.environ.get('RAPID_API_KEY'),
+        GEMOTION_AUTH_TOKEN=os.environ.get('GEMOTION_AUTH_TOKEN')
     )
 
     @app.route('/hello')
