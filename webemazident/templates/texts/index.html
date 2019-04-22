@@ -5,21 +5,20 @@
 {% endblock %}
 
 {% block content %}
+    <div class="d-flex flex-wrap">
     {% for text in texts %}
-        <article class="post">
-            <header>
-                <div>
-                    <h1>{{ text['caption'] }}</h1>
-                    <div class="about">by {{ text['candidate'] }}</div>
-                    <a class="action" href="{{ url_for('text.edit', id = text._id) }}">Edit</a>
-                    <form action="{{ url_for('text.delete', id = text._id) }}" method="post">
-                        <input type="submit" value="Delete">
-                    </form>
-                </div>
-            </header>
-            {% if not loop.last %}
-                <hr/>
-            {% endif %}
-        </article>
+    <div class="card" style="width: 18rem; margin: 8px">
+        <div class="card-body">
+            <h5 class="card-title">{{ text['caption'] }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">by {{ text['candidate'] }}</h6>
+            {# <a href="#" class="btn btn-primary">Go</a>
+            <a href="#" class="btn btn-secondary">Stay</a> #}
+            <a class="btn btn-primary float-right" href="{{ url_for('text.edit', id = text._id) }}">Edit</a>
+            <form class="float-right" style="display: inline-block; margin-block-end: 0; margin-right: 1em" action="{{ url_for('text.delete', id = text._id) }}" method="post">
+                <button type="submit" class="btn btn-light">Delete</button>
+            </form>
+        </div>
+    </div>
     {% endfor %}
+    </div>
 {% endblock %}
