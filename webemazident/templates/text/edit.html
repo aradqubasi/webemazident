@@ -6,28 +6,76 @@
 
 {% block content %}
     <form method="post">
-        <label for="caption">Caption</label>
-        <input name="caption" id="caption" required value="{{ request.form['caption'] or text['caption'] }}">
-        <br>
+        <div class="form-group">
+            <label for="caption">Caption</label>
+            <input name="caption" class="form-control" id="caption" required value="{{ request.form['caption'] or text['caption'] }}">
+        </div>
 
-        <label for="candidate">Candidate</label>
-        <input name="candidate" id="candidate" required value="{{ request.form['candidate'] or text['candidate'] }}">
-        <br>
+        <div class="form-group">
+            <label for="candidate">Candidate</label>
+            <input name="candidate" class="form-control" id="candidate" required value="{{ request.form['candidate'] or text['candidate'] }}">
+        </div>
 
         {% for sentence in text['sentences'] %}
-        <input name="number" value="{{ sentence['number'] }}">
-        <input name="original" value="{{ sentence['original'] }}">
-        <input name="translation" value="{{ sentence['translation'] }}">
-        <br>
-            {% for emotion, ratio in sentence['emotions'].items() %}
-            <label for="{{ emotion }}">{{emotion}}</label>
-            <input name="{{ emotion }}" type="number" step="any" value="{{ ratio }}">
-            {% endfor%}
-        <br>
+        <input name="number" type="hidden" value="{{ sentence['number'] }}">
+        <div class="row">
+            <div class="col-4 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">RU</span>
+                </div>
+                <textarea name="original" class="form-control">{{ sentence['original'] }}</textarea>
+            </div>
+            <div class="col-4 input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">EN</span>
+                </div>
+                <textarea name="translation" class="form-control">{{ sentence['translation'] }}</textarea>
+            </div>
+            {% for emotion_group in [ 
+                [
+                    {
+                        'name' : 'happiness', 
+                        'symbol' : 'far fa-smile-beam'
+                    }, {
+                        'name' : 'surprise', 
+                        'symbol' : 'far fa-surprise'
+                    }, {
+                        'name' : 'calm', 
+                        'symbol' : 'far fa-meh'
+                    }, {
+                        'name' : 'fear', 
+                        'symbol' : 'far fa-frown-open'
+                    }
+                ], 
+                [
+                    {
+                        'name' : 'sadness', 
+                        'symbol' : 'far fa-sad-cry'
+                    }, {
+                        'name' : 'anger', 
+                        'symbol' : 'far fa-angry'
+                    }, {
+                        'name' : 'disgust', 
+                        'symbol' : 'far fa-flushed'
+                    }
+                ], 
+            ] %}
+            <div class="col-2">
+                {% for emotion in emotion_group %}
+                <div class="input-group" style="margin: 1em">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="{{ emotion['symbol'] }}"></i></span>
+                    </div>
+                    <input class="form-control" name="{{ emotion['name'] }}" type="number" step="any" value="{{ sentence['emotions'][emotion['name']] }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
         {% endfor %}
-        <input type="submit" value="Update">
+        <input type="submit" class="btn btn-primary" value="Update">
     </form>
     <form action="{{ url_for('text.delete', id=text['_id']) }}" method="post">
-        <input type="submit" value="Delete">
+        <input type="submit" class="btn btn-danger" value="Delete">
     </form>
 {% endblock %}
