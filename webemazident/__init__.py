@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 import os
 
 def create_app() -> Flask:
@@ -12,9 +12,9 @@ def create_app() -> Flask:
         GEMOTION_AUTH_TOKEN=os.environ.get('GEMOTION_AUTH_TOKEN')
     )
 
-    @app.route('/hello')
+    @app.route('/')
     def hello():
-        return 'The Doom has come to this world'
+        return redirect(url_for('texts.index'))
 
     from . import texts
     app.register_blueprint(texts.bp)

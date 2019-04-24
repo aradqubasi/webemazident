@@ -10,5 +10,5 @@ bp = Blueprint('texts', __name__, url_prefix='/texts')
 @bp.route('/index', methods=('GET',))
 def index():
     texts = get_db().get_collection('texts').find({})
-    return render_template('texts/index.html', texts=texts)
+    return render_template('texts/index.html', texts=texts, current_nav_location='texts')
     

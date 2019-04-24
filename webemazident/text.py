@@ -13,7 +13,7 @@ bp = Blueprint('text', __name__)
 @bp.route('/text/new', methods=('GET', 'POST'))
 def new():
     if request.method == 'GET':
-        return render_template('text/new.html')
+        return render_template('text/new.html', current_nav_location='new')
     else:
         splitted = split_by_sentences(request.form['body_text'])
         translated = [translate(sentence) for sentence in splitted]
@@ -43,6 +43,7 @@ def edit(id):
         originals = request.form.getlist('original')
         translations = request.form.getlist('translation')
 
+        happiness = request.form.getlist('happiness')
         surprise = request.form.getlist('surprise')
         calm = request.form.getlist('calm')
         fear = request.form.getlist('fear')
@@ -59,6 +60,7 @@ def edit(id):
                 'original' : originals[i],
                 'translation' : translations[i],
                 'emotions' : {
+                    'happiness' : happiness[i],
                     'surprise' : surprise[i],
                     'calm' : calm[i],
                     'fear' : fear[i],

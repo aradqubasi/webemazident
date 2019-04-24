@@ -47,7 +47,7 @@ def measure(sentence):
                 "Content-Type": "application/json; charset=UTF-8",
                 "Authorization": current_app.config['GEMOTION_AUTH_TOKEN'],
                 "lang": "en",
-                "text": sentence  
+                "text": sentence.encode("utf-8") 
             })
         ).read().decode('utf-8')
     )

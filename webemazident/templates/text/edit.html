@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
-{% block header %}
+{# {% block header %}
     <h1>{% block title %}Text{% endblock %}</h1>
     <p>Here be the actions</p>
-{% endblock %}
+{% endblock %} #}
 
 {% block content %}
     <form method="post">
         <div class="form-group">
             <label for="caption">Caption</label>
-            <input name="caption" class="form-control" id="caption" required value="{{ request.form['caption'] or text['caption'] }}">
+            <input name="caption" class="form-control col-6" id="caption" required value="{{ request.form['caption'] or text['caption'] }}">
         </div>
 
         <div class="form-group">
             <label for="candidate">Candidate</label>
-            <input name="candidate" class="form-control" id="candidate" required value="{{ request.form['candidate'] or text['candidate'] }}">
+            <input name="candidate" class="form-control col-6" id="candidate" required value="{{ request.form['candidate'] or text['candidate'] }}">
         </div>
 
+        <input type="submit" class="btn btn-primary col-1" value="Update">
+        
         {% for sentence in text['sentences'] %}
         <input name="number" type="hidden" value="{{ sentence['number'] }}">
-        <div class="row">
+        <div class="row" style="margin: 1em">
             <div class="col-4 input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text">RU</span>
@@ -73,9 +75,5 @@
             {% endfor %}
         </div>
         {% endfor %}
-        <input type="submit" class="btn btn-primary" value="Update">
-    </form>
-    <form action="{{ url_for('text.delete', id=text['_id']) }}" method="post">
-        <input type="submit" class="btn btn-danger" value="Delete">
     </form>
 {% endblock %}
