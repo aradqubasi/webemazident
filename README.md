@@ -50,7 +50,37 @@ Original setup depends heavily on Digital Ocean droplets.
 Installation depends on number of user-defined entities, like system user name, passwords, database names, instances name etc. Below is a list such entities. Each time you see %%ENTITY_NAME%% in command line - replace it with your value.
 
 %%YOUR_SERVER_IP%%
+IP address of your droplet like 134.205.223.50
+
 %%NON_ROOT_USER%%
+Any valid username, like subroot
+
+%%PROJECT_FOLDER%%
+Any valid folder name, like webemazident
+
+%%PYTHON_VIRTUAL_ENVIRONMENT_NAME%%
+Alphanumeric without spaces, like dev-1-env
+
+%%NAME_OF_PROJECT%%
+Alphanumeric without spaces, like webemazident
+
+%%DATABASE_CONNECTION_STRING%%
+Mongobd connection string, without database, like mongodb://username:userpwd@165.227.154.157:27017
+
+%%DATABASE_NAME%%
+Any valid mongodb database name, like dev-1
+
+%%GOOGLE_API_KEY%%
+Valid Google-API key, authorized to perform translation calls
+
+%%GEMOTION_RAPID_API_KEY%%
+%%GEMOTION_AUTH_TOKEN%%
+
+%%FLASK_START_UP%%
+Flask app start command, like webemazident:create_app()
+
+%%DOMAIN_NAME%%
+Any valid domain you have registered for your server, without protocol and www. like ghfj.ml
 
 ### Initial Server Setup
 
@@ -141,9 +171,103 @@ sudo systemctl status mongodb
 
 ### Install Nginx
 
-### Serve Flask Applications with Gunicorn
+```
+sudo apt update
+sudo apt install nginx
+sudo ufw app list
+sudo ufw allow 'Nginx HTTP'
+sudo ufw status
+sudo systemctl status nginx
+```
+
+### Prepare Python environment
+
+```
+sudo apt update
+sudo apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+sudo apt install python3-venv
+mkdir ~/%%PROJECT_FOLDER%%
+cd ~/%%PROJECT_FOLDER%%
+python3.6 -m venv %%PYTHON_VIRTUAL_ENVIRONMENT_NAME%%
+source %%PYTHON_VIRTUAL_ENVIRONMENT_NAME%%/bin/activate
+pip install wheel
+pip install gunicorn flask
+...
+deactivate
+```
+
+### Configuring Gunicorn
+
+```
+sudo nano /etc/systemd/system/%%NAME_OF_PROJECT%%
+```
+
+Insert next text and save
+
+```
+[Unit]
+Description=Gunicorn instance to serve dev-1 environment
+After=network.target
+
+[Service]
+User=%%NON_ROOT_USER%%
+Group=www-data
+WorkingDirectory=/home/%%NON_ROOT_USER%%/%%NON_ROOT_USER%%/%%NAME_OF_PROJECT%%
+Environment="PATH=/home/%%NON_ROOT_USER%%/%%NON_ROOT_USER%%/%%NAME_OF_PROJECT%%/%%PYTHON_VIRTUAL_ENVIRONMENT_NAME%%/bin"
+Environment="CONNECTION_STRING=%%DATABASE_CONNECTION_STRING%%"
+Environment="DATABASE=%%DATABASE_NAME%%"
+Environment="GOOGLE_API_KEY=%%GOOGLE_API_KEY%%"
+Environment="RAPID_API_KEY=%%GEMOTION_RAPID_API_KEY%%"
+Environment="GEMOTION_AUTH_TOKEN=Token token=\"%%GEMOTION_AUTH_TOKEN%%\""
+ExecStart=/home/%%NON_ROOT_USER%%/%%NAME_OF_PROJECT%%/%%PYTHON_VIRTUAL_ENVIRONMENT_NAME%%/bin/gunicorn --workers 3 --bind unix:%%NAME_OF_PROJECT%%.sock -m 007 %%FLASK_START_UP%%
+
+[Install]
+WantedBy=multi-user.target
+```
+Save and return to command prompt
+```
+sudo systemctl start %%NAME_OF_PROJECT%%
+sudo systemctl enable %%NAME_OF_PROJECT%%
+sudo systemctl status %%NAME_OF_PROJECT%%
+sudo nano /etc/nginx/sites-available/%%NAME_OF_PROJECT%%
+```
+
+Insert next text and save
+
+```
+server {
+    listen 80;
+    server_name %%DOMAIN_NAME%% www.%%DOMAIN_NAME%%;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/%%NON_ROOT_USER%%/%%NAME_OF_PROJECT%%.sock;
+    }
+}
+```
+
+Back at the command prompt
+
+```
+sudo ln -s /etc/nginx/sites-available/%%NAME_OF_PROJECT%% /etc/nginx/sites-available/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+### Checking logs
+
+```
+sudo less /etc/log/nginx/error.log
+sudo less /etc/log/nginx/access.log
+sudo journalctl -u nginx
+sudo journalctl -u %%NAME_OF_PROJECT%%
+```
 
 ### Systemctl
+
+Useful commands
+
+Current status
 
 ```
 sudo systemctl status %%SERVICE_NAME%%
@@ -152,7 +276,16 @@ sudo systemctl stop %%SERVICE_NAME%%
 sudo systemctl restart %%SERVICE_NAME%%
 ```
 
+Manage auto-start
+
+```
+sudo systemctl enable %%SERVICE_NAME%%
+sudo systemctl disable %%SERVICE_NAME%%
+```
+
 ### Mongo shell
+
+Useful commands
 
 ```
 use %%DATABASE_NAME%%
