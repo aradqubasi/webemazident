@@ -42,6 +42,7 @@ Original setup depends heavily on Digital Ocean droplets.
 - [How To Install Nginx on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04)
 - [How To Set Up Nginx Server Blocks (Virtual Hosts) on Ubuntu 14.04 LTS](https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-14-04-lts)
 - [How To Serve Flask Applications with Gunicorn and Nginx on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-18-04#step-3-—-setting-up-a-flask-application)
+- [How To Install and Secure Redis on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04)
 
 ## Command line walkthrough 
 
@@ -81,6 +82,8 @@ Flask app start command, like webemazident:create_app()
 
 %%DOMAIN_NAME%%
 Any valid domain you have registered for your server, without protocol and www. like ghfj.ml
+
+%%REDIS_SAFE_PASSWORD%%
 
 ### Initial Server Setup
 
@@ -254,6 +257,62 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
+### Installing Redis
+
+```
+sudo apt update
+sudo apt install redis-server
+sudo systemctl status redis-server
+redis-cli
+```
+
+In redis cli shell
+
+```
+ping
+```
+
+Exit back to console
+
+```
+sudo nano /etc/redis/redis.conf
+```
+
+Find next "bind" config section and make sure it is match specified below
+
+```
+bind 127.0.0.1 ::1
+```
+
+Save and exit back to console
+
+```
+sudo systemctl restart redis-server
+sudo netstat -lnp | grep redis
+openssl rand 60 | openssl base64 -A
+```
+
+Copy generated %%REDIS_SAFE_PASSWORD%%
+
+```
+sudo nano /etc/redis/redis.conf
+```
+
+Find and uncomment requirepass section, set password
+
+```
+...
+requirepass %%REDIS_SAFE_PASSWORD%%
+...
+```
+
+Save and exit back to command prompt
+
+```
+sudo systemctl restart redis-server
+sudo ufw allow 6379
+```
+
 ### Checking logs
 
 ```
@@ -293,3 +352,21 @@ db.auth('%%LOGIN%%', '%%PASSWORD%%')
 show dbs
 show users
 ```
+
+### Redis CLI
+
+Basic commands
+
+```
+set key value
+get key
+auth %%REDIS_SAFE_PASSWORD%%
+```
+
+### Python packaging
+
+- [Packaging Python Projects](https://packaging.python.org/tutorials/packaging-projects/)
+
+### MongoDB
+
+connection string mongodb://[username:password@]host1[:port1][,...hostN[:portN]]][/[database][?options]]
